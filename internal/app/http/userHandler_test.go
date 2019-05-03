@@ -1,7 +1,16 @@
 package http
 
 import (
+	"errors"
+	"log"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"strings"
+	"testing"
 
+	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/mock"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -9,7 +18,7 @@ import (
 
 func TestAppServer_RegisterUserHandler(t *testing.T) {
 	mockService := mock.UserService{}
-	mockService.CreateUserFn = func(u *ginexamples.User, password string) (*ginexamples.User, error) {
+	mockService.CreateUserFn = func(u *ginexample.User, password string) (*ginexample.User, error) {
 		if len(password) < 8 {
 			return nil, errors.New("too short")
 		}
@@ -62,11 +71,11 @@ func TestAppServer_RegisterUserHandler(t *testing.T) {
 
 func TestAppServer_LoginUserHandler(t *testing.T) {
 	mockService := mock.UserService{}
-	mockService.LoginFn = func(email string, password string) (*ginexamples.User, error) {
+	mockService.LoginFn = func(email string, password string) (*ginexample.User, error) {
 		if password != "password" {
 			return nil, errors.New("bad login")
 		}
-		return &ginexamples.User{Model: gorm.Model{ID: 1}}, nil
+		return &ginexample.User{Model: gorm.Model{ID: 1}}, nil
 	}
 	appServer := AppServer{UserService: &mockService, Logger: log.New(os.Stdout, "", 0)}
 
@@ -163,11 +172,11 @@ func TestAppServer_LogoutUserHandler(t *testing.T) {
 
 func TestAppServer_GetUserHandler(t *testing.T) {
 	mockService := mock.UserService{}
-	mockService.GetUserFn = func(id string) (*ginexamples.User, error) {
+	mockService.GetUserFn = func(id string) (*ginexample.User, error) {
 		if id != "userId" {
 			return nil, errors.New("not found")
 		}
-		return &ginexamples.User{Model: gorm.Model{ID: 1}}, nil
+		return &ginexample.User{Model: gorm.Model{ID: 1}}, nil
 	}
 	appServer := AppServer{UserService: &mockService, Logger: log.New(os.Stdout, "", 0)}
 
@@ -210,11 +219,11 @@ func TestAppServer_GetUserHandler(t *testing.T) {
 }
 func TestAppServer_GetMeHandler(t *testing.T) {
 	mockService := mock.UserService{}
-	mockService.GetUserFn = func(id string) (*ginexamples.User, error) {
+	mockService.GetUserFn = func(id string) (*ginexample.User, error) {
 		if id != "1" {
 			return nil, errors.New("not found")
 		}
-		return &ginexamples.User{Model: gorm.Model{ID: 1}, Email: "heisenberg@gmail.com", Name: "heisenberg"}, nil
+		return &ginexample.User{Model: gorm.Model{ID: 1}, Email: "heisenberg@gmail.com", Name: "heisenberg"}, nil
 	}
 	appServer := AppServer{UserService: &mockService, Logger: log.New(os.Stdout, "", 0)}
 

@@ -1,39 +1,39 @@
 package mock
 
-import "ginexamples"
+import "github.com/LIYINGZHEN/ginexample"
 
 type UserService struct {
 	CreateUserFnInvoked bool
-	CreateUserFn        func(u *ginexamples.User, password string) (*ginexamples.User, error)
+	CreateUserFn        func(u *ginexample.User, password string) (*ginexample.User, error)
 
 	GetUserFnInvoked bool
-	GetUserFn        func(id string) (*ginexamples.User, error)
+	GetUserFn        func(id string) (*ginexample.User, error)
 
 	UserAuthenticationProvider
 }
 
-func (uSM *UserService) CreateUser(u *ginexamples.User, password string) (*ginexamples.User, error) {
+func (uSM *UserService) CreateUser(u *ginexample.User, password string) (*ginexample.User, error) {
 	uSM.CreateUserFnInvoked = true
 	return uSM.CreateUserFn(u, password)
 }
 
-func (uSM *UserService) GetUser(id string) (*ginexamples.User, error) {
+func (uSM *UserService) GetUser(id string) (*ginexample.User, error) {
 	uSM.GetUserFnInvoked = true
 	return uSM.GetUserFn(id)
 }
 
 type UserAuthenticationProvider struct {
 	LoginFnInvoked bool
-	LoginFn        func(email string, password string) (*ginexamples.User, error)
+	LoginFn        func(email string, password string) (*ginexample.User, error)
 
 	LogoutFnInvoked bool
 	LogoutFn        func(sessionID string) error
 
 	CheckAuthenticationFnInvoked bool
-	CheckAuthenticationFn        func(sessionID string) (*ginexamples.User, error)
+	CheckAuthenticationFn        func(sessionID string) (*ginexample.User, error)
 }
 
-func (uAM *UserAuthenticationProvider) Login(email string, password string) (*ginexamples.User, error) {
+func (uAM *UserAuthenticationProvider) Login(email string, password string) (*ginexample.User, error) {
 	uAM.LoginFnInvoked = true
 	return uAM.LoginFn(email, password)
 }
@@ -42,7 +42,7 @@ func (uAM *UserAuthenticationProvider) Logout(sessionID string) error {
 	uAM.LogoutFnInvoked = true
 	return uAM.LogoutFn(sessionID)
 }
-func (uAM *UserAuthenticationProvider) CheckAuthentication(sessionID string) (*ginexamples.User, error) {
+func (uAM *UserAuthenticationProvider) CheckAuthentication(sessionID string) (*ginexample.User, error) {
 	uAM.CheckAuthenticationFnInvoked = true
 	return uAM.CheckAuthenticationFn(sessionID)
 }

@@ -2,9 +2,9 @@ package http
 
 import (
 	"fmt"
-	"ginexamples"
 	"net/http"
 
+	"github.com/LIYINGZHEN/ginexample"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,7 +16,7 @@ func (a *AppServer) RegisterUserHandler(c *gin.Context) {
 	}
 
 	var (
-		userModel ginexamples.User
+		userModel ginexample.User
 		req       request
 	)
 

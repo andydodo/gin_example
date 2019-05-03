@@ -8,7 +8,7 @@ test:
 
 docker-build:
 	@echo "=============building image============="
-	docker build . -t ginexamples-backend:`git rev-parse HEAD`
+	docker build . -t ginexample-backend:`git rev-parse HEAD`
 
 compose-up:
 	@echo "=============starting gollery locally============="
@@ -22,7 +22,7 @@ compose-down:
 
 pg-up:
 	@echo "=============running a temporary postgres============="
-	docker run --rm --name pg-docker -e POSTGRES_USER=postgres -e POSTGRES_DB=ginexamples -d -p 5432:5432 postgres
+	docker run --rm --name pg-docker -e POSTGRES_USER=postgres -e POSTGRES_DB=ginexample -d -p 5432:5432 postgres
 
 pg-down:
 	@echo "=============stopping the temporary postgres============="

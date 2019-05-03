@@ -3,27 +3,27 @@ package http
 import (
 	"bytes"
 	"errors"
-	"ginexamples"
-	"ginexamples/pkg/mock"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/mock"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewAuthMiddleware(t *testing.T) {
 	var as = &mock.UserAuthenticationProvider{
-		CheckAuthenticationFn: func(sessionID string) (*ginexamples.User, error) {
+		CheckAuthenticationFn: func(sessionID string) (*ginexample.User, error) {
 			if sessionID == "" {
 				return nil, errors.New("empty sessionID")
 			}
 			if sessionID == "invalid" {
 				return nil, errors.New("not found")
 			}
-			return &ginexamples.User{}, nil
+			return &ginexample.User{}, nil
 		},
 	}
 

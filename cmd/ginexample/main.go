@@ -1,17 +1,18 @@
 package main
 
 import (
-	"ginexamples/pkg/config"
-	"ginexamples/pkg/http"
-	"ginexamples/pkg/postgres"
-	"ginexamples/pkg/service/userservice"
 	"io"
 	"log"
 	"os"
+
+	"github.com/LIYINGZHEN/ginexample/configs"
+	"github.com/LIYINGZHEN/ginexample/internal/app/http"
+	"github.com/LIYINGZHEN/ginexample/internal/app/postgres"
+	"github.com/LIYINGZHEN/ginexample/internal/app/service/userservice"
 )
 
 func main() {
-	c := config.GetConfig()
+	c := configs.GetConfig()
 	postgresConfig := postgres.DBConfig{
 		Host:     c.PGHost,
 		Port:     c.PGPort,

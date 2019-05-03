@@ -1,14 +1,13 @@
 package userservice
 
 import (
-	"ginexamples"
-	"ginexamples/pkg/auth"
-
+	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/auth"
 	"github.com/pkg/errors"
 )
 
 type UserService struct {
-	r ginexamples.UserRepository
+	r ginexample.UserRepository
 	a Authenticator
 }
 
@@ -19,26 +18,26 @@ type Authenticator interface {
 }
 
 // New returns the UserService.
-func New(userRepository ginexamples.UserRepository) *UserService {
+func New(userRepository ginexample.UserRepository) *UserService {
 	return &UserService{
 		r: userRepository,
 		a: &auth.Authenticator{},
 	}
 }
 
-func (uS *UserService) CreateUser(user *ginexamples.User, password string) (*ginexamples.User, error) {
+func (uS *UserService) CreateUser(user *ginexample.User, password string) (*ginexample.User, error) {
 	_, err := uS.r.FindByEmail(user.Email)
 	if err == nil {
-		return &ginexamples.User{}, errors.New("email already exists")
+		return &ginexample.User{}, errors.New("email already exists")
 	}
 
 	if len(password) < 8 {
-		return &ginexamples.User{}, errors.New("password too short")
+		return &ginexample.User{}, errors.New("password too short")
 	}
 
 	hashedPassword, err := uS.a.Hash(password)
 	if err != nil {
-		return &ginexamples.User{}, errors.Wrap(err, "error hashing password")
+		return &ginexample.User{}, errors.Wrap(err, "error hashing password")
 	}
 
 	user.PasswordHash = hashedPassword
@@ -46,12 +45,12 @@ func (uS *UserService) CreateUser(user *ginexamples.User, password string) (*gin
 
 	err = uS.r.Store(user)
 	if err != nil {
-		return &ginexamples.User{}, errors.Wrap(err, "error storing user")
+		return &ginexample.User{}, errors.Wrap(err, "error storing user")
 	}
 	return user, nil
 }
 
-func (uS *UserService) Login(email string, password string) (*ginexamples.User, error) {
+func (uS *UserService) Login(email string, password string) (*ginexample.User, error) {
 	user, err := uS.r.FindByEmail(email)
 	if err != nil {
 		return nil, errors.Wrap(err, "error finding user by email")
@@ -83,7 +82,7 @@ func (uS *UserService) Logout(sessionID string) error {
 	return nil
 }
 
-func (uS *UserService) CheckAuthentication(sessionID string) (*ginexamples.User, error) {
+func (uS *UserService) CheckAuthentication(sessionID string) (*ginexample.User, error) {
 	user, err := uS.r.FindBySessionID(sessionID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error finding by sessionID")
@@ -92,6 +91,6 @@ func (uS *UserService) CheckAuthentication(sessionID string) (*ginexamples.User,
 	return user, nil
 }
 
-func (uS *UserService) GetUser(id string) (*ginexamples.User, error) {
+func (uS *UserService) GetUser(id string) (*ginexample.User, error) {
 	return uS.r.Find(id)
 }

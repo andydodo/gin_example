@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"os"
@@ -54,7 +54,7 @@ func GetConfig() Config {
 
 	pgDBName, ok := os.LookupEnv("PG_DB_NAME")
 	if !ok {
-		pgDBName = "ginexamples"
+		pgDBName = "ginexample"
 	}
 
 	logFile, ok := os.LookupEnv("LOGFILE")

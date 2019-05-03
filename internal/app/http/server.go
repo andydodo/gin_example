@@ -3,12 +3,13 @@ package http
 import (
 	"log"
 
+	"github.com/LIYINGZHEN/ginexample"
 	"github.com/gin-gonic/gin"
 )
 
 // AppServer contains the information to run a server.
 type AppServer struct {
-	UserService ginexamples.UserService
+	UserService ginexample.UserService
 	Logger      *log.Logger
 	route       *gin.Engine
 }

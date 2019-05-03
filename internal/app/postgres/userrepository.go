@@ -3,8 +3,8 @@ package postgres
 import (
 	"errors"
 	"fmt"
-	"ginexamples"
 
+	"github.com/LIYINGZHEN/ginexample"
 	"github.com/jinzhu/gorm"
 )
 
@@ -19,12 +19,12 @@ func newUserRepository(db *gorm.DB) *UserRepository {
 }
 
 // Stroe creates a user record in the table
-func (u *UserRepository) Store(user *ginexamples.User) error {
+func (u *UserRepository) Store(user *ginexample.User) error {
 	return u.db.Create(user).Error
 }
 
-func (u *UserRepository) Find(id string) (*ginexamples.User, error) {
-	var user ginexamples.User
+func (u *UserRepository) Find(id string) (*ginexample.User, error) {
+	var user ginexample.User
 
 	db := u.db.Where("id = ?", id)
 	err := first(db, &user)
@@ -35,22 +35,22 @@ func (u *UserRepository) Find(id string) (*ginexamples.User, error) {
 	return &user, nil
 }
 
-func (u *UserRepository) FindByEmail(email string) (*ginexamples.User, error) {
+func (u *UserRepository) FindByEmail(email string) (*ginexample.User, error) {
 	if email == "" {
-		return &ginexamples.User{}, errors.New("not found")
+		return &ginexample.User{}, errors.New("not found")
 	}
 	return u.findBy("email", email)
 }
 
-func (u *UserRepository) FindBySessionID(sessionID string) (*ginexamples.User, error) {
+func (u *UserRepository) FindBySessionID(sessionID string) (*ginexample.User, error) {
 	if sessionID == "" {
 		return nil, errors.New("not found")
 	}
 	return u.findBy("session_id", sessionID)
 }
 
-func (u *UserRepository) findBy(key string, value string) (*ginexamples.User, error) {
-	user := ginexamples.User{}
+func (u *UserRepository) findBy(key string, value string) (*ginexample.User, error) {
+	user := ginexample.User{}
 
 	db := u.db.Where(fmt.Sprintf("%s = ?", key), value)
 	err := first(db, &user)
@@ -66,6 +66,6 @@ func first(db *gorm.DB, dst interface{}) error {
 	return err
 }
 
-func (u *UserRepository) Update(user *ginexamples.User) error {
+func (u *UserRepository) Update(user *ginexample.User) error {
 	return u.db.Save(user).Error
 }

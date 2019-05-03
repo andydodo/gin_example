@@ -1,4 +1,4 @@
-package ginexamples
+package ginexample
 
 import (
 	"github.com/jinzhu/gorm"

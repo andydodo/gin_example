@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"os"
@@ -46,7 +46,7 @@ func TestGetConfig(t *testing.T) {
 				"5432",
 				"postgres",
 				"",
-				"ginexamples",
+				"ginexample",
 				"",
 			}},
 	}

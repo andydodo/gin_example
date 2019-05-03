@@ -11,4 +11,4 @@ services:
       - ./volumes/postgresql:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=ginexamples
+      - POSTGRES_DB=ginexample

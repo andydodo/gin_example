@@ -1,10 +1,10 @@
 package userservice
 
 import (
-	"ginexamples"
-	"ginexamples/pkg/mock"
 	"testing"
 
+	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/mock"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -12,34 +12,34 @@ import (
 
 var r = mock.UserRepository{
 	StoreFnInvoked: false,
-	StoreFn: func(user *ginexamples.User) error {
+	StoreFn: func(user *ginexample.User) error {
 		if user.Email == "fail@mail.com" {
 			return errors.New("error storing user")
 		}
 		return nil
 	},
 	UpdateFnInvoked: false,
-	UpdateFn: func(user *ginexamples.User) error {
+	UpdateFn: func(user *ginexample.User) error {
 		return nil
 	},
 	FindFnInvoked: false,
-	FindFn: func(id string) (*ginexamples.User, error) {
+	FindFn: func(id string) (*ginexample.User, error) {
 		if id == "1" {
-			return &ginexamples.User{Model: gorm.Model{ID: 1}}, nil
+			return &ginexample.User{Model: gorm.Model{ID: 1}}, nil
 		}
 		return nil, errors.New("not found")
 	},
 	FindByEmailFnInvoked: false,
-	FindByEmailFn: func(email string) (*ginexamples.User, error) {
+	FindByEmailFn: func(email string) (*ginexample.User, error) {
 		if email == "existing@mail.com" {
-			return &ginexamples.User{Model: gorm.Model{ID: 1}, PasswordHash: "password"}, nil
+			return &ginexample.User{Model: gorm.Model{ID: 1}, PasswordHash: "password"}, nil
 		}
 		return nil, errors.New("not found")
 	},
 	FindBySessionIDFnInvoked: false,
-	FindBySessionIDFn: func(sessionID string) (*ginexamples.User, error) {
+	FindBySessionIDFn: func(sessionID string) (*ginexample.User, error) {
 		if sessionID == "sessionID-0-0-0" {
-			return &ginexamples.User{Model: gorm.Model{ID: 1}}, nil
+			return &ginexample.User{Model: gorm.Model{ID: 1}}, nil
 		}
 		return nil, errors.New("not found")
 	},
@@ -95,7 +95,7 @@ func TestUserService_CreateUser(t *testing.T) {
 			defer func() { r.StoreFnInvoked = false }()
 			defer func() { a.HashFnInvoked = false }()
 
-			user, err := us.CreateUser(&ginexamples.User{Email: v.email}, v.password)
+			user, err := us.CreateUser(&ginexample.User{Email: v.email}, v.password)
 			if v.error {
 				assert.NotNil(t, err, "did not fail to create existing user")
 				if err.Error() != "error storing user: error storing user" {

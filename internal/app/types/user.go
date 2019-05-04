@@ -1,4 +1,4 @@
-package ginexample
+package types
 
 import (
 	"github.com/jinzhu/gorm"

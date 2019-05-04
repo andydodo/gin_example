@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/types"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,7 +16,7 @@ func (a *AppServer) RegisterUserHandler(c *gin.Context) {
 	}
 
 	var (
-		userModel ginexample.User
+		userModel types.User
 		req       request
 	)
 

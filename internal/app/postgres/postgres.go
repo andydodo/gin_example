@@ -3,7 +3,7 @@ package postgres
 import (
 	"fmt"
 
-	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/types"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -48,7 +48,7 @@ func Initialize(c DBConfig) *Repository {
 
 // AutoMigrate will attempt to automatically migrate all tables
 func (r *Repository) AutoMigrate() error {
-	err := r.db.AutoMigrate(&ginexample.User{}).Error
+	err := r.db.AutoMigrate(&types.User{}).Error
 	if err != nil {
 		return err
 	}

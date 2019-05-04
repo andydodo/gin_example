@@ -1,6 +1,6 @@
 run:
 	@echo "=============starting server============="
-	go run cmd/server/main.go
+	go run cmd/ginexample/main.go
 
 test:
 	@echo "=============running test============="

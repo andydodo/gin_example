@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/LIYINGZHEN/ginexample"
+	"github.com/LIYINGZHEN/ginexample/internal/app/types"
 	"github.com/gin-gonic/gin"
 )
 
-func NewAuthMiddleware(provider ginexample.UserAuthenticationProvider) gin.HandlerFunc {
+func NewAuthMiddleware(provider types.UserAuthenticationProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionID, err := c.Cookie("sessionID")
 		if err != nil {

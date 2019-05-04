@@ -8,22 +8,22 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/LIYINGZHEN/ginexample"
 	"github.com/LIYINGZHEN/ginexample/internal/app/mock"
+	"github.com/LIYINGZHEN/ginexample/internal/app/types"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewAuthMiddleware(t *testing.T) {
 	var as = &mock.UserAuthenticationProvider{
-		CheckAuthenticationFn: func(sessionID string) (*ginexample.User, error) {
+		CheckAuthenticationFn: func(sessionID string) (*types.User, error) {
 			if sessionID == "" {
 				return nil, errors.New("empty sessionID")
 			}
 			if sessionID == "invalid" {
 				return nil, errors.New("not found")
 			}
-			return &ginexample.User{}, nil
+			return &types.User{}, nil
 		},
 	}
 

@@ -3,6 +3,7 @@ package request
 import (
 	"crypto/tls"
 	"errors"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -23,7 +24,7 @@ func NewRequest() *Req {
 	return &Req{}
 }
 
-func (r *Req) Request() (*http.Response, error) {
+func (r *Req) Request() ([]byte, error) {
 	tr := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 	httpClient := &http.Client{Timeout: r.Timeout, Transport: tr}
 
@@ -33,6 +34,7 @@ func (r *Req) Request() (*http.Response, error) {
 		log.Printf("http request url error:(%v)", err)
 		return nil, errors.New("http request error")
 	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36")
 
 	resp, err := httpClient.Do(req)
 
@@ -41,8 +43,8 @@ func (r *Req) Request() (*http.Response, error) {
 		return nil, errors.New("http response error")
 	}
 
-	if resp.StatusCode == 200 {
-		return resp, nil
+	if resp.StatusCode == http.StatusOK {
+		return ioutil.ReadAll(resp.Body)
 	}
 
 	return nil, errors.New(string(resp.StatusCode))

@@ -8,6 +8,7 @@ import (
 	"github.com/LIYINGZHEN/ginexample/configs"
 	"github.com/LIYINGZHEN/ginexample/internal/app/http"
 	"github.com/LIYINGZHEN/ginexample/internal/app/postgres"
+	"github.com/LIYINGZHEN/ginexample/internal/app/service/linkservice"
 	"github.com/LIYINGZHEN/ginexample/internal/app/service/userservice"
 )
 
@@ -39,6 +40,7 @@ func main() {
 	server := http.AppServer{
 		Logger:      log.New(logDst, "", log.LstdFlags),
 		UserService: userservice.New(repository.UserRepository),
+		LinkService: linkservice.New(repository.LinkRepository),
 	}
 	server.Run()
 }

@@ -30,6 +30,7 @@ func (c DBConfig) connectionInfo() string {
 // Repository contains information for every repositories.
 type Repository struct {
 	UserRepository *UserRepository
+	LinkRepository *LinkRepository
 	db             *gorm.DB
 }
 
@@ -42,13 +43,14 @@ func Initialize(c DBConfig) *Repository {
 
 	return &Repository{
 		UserRepository: newUserRepository(db),
+		LinkRepository: newLinkRepository(db),
 		db:             db,
 	}
 }
 
 // AutoMigrate will attempt to automatically migrate all tables
 func (r *Repository) AutoMigrate() error {
-	err := r.db.AutoMigrate(&types.User{}).Error
+	err := r.db.AutoMigrate(&types.User{}, &types.Link{}).Error
 	if err != nil {
 		return err
 	}

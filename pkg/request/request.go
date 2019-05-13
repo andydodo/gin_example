@@ -14,6 +14,8 @@ type Req struct {
 	Method  string
 	Timeout time.Duration
 	Retry   int
+	// add max worker nums
+	MaxNums int
 }
 
 type ReqApi interface {
@@ -25,7 +27,11 @@ func NewRequest() *Req {
 }
 
 func (r *Req) Request() ([]byte, error) {
-	tr := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	tr := &http.Transport{
+		MaxIdleConnsPerHost: r.MaxNums,
+		MaxIdleConns:        20 * r.MaxNums,
+		TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
+	}
 	httpClient := &http.Client{Timeout: r.Timeout, Transport: tr}
 
 	req, err := http.NewRequest(r.Method, r.Url, nil)

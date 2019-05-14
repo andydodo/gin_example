@@ -51,8 +51,8 @@ func (l *LinkRepository) findBy(key, value string) (*types.Link, error) {
 	return &link, err
 }
 
-func (l *LinkRepository) Update(link *types.Link) error {
-	return l.db.Save(link).Error
+func (l *LinkRepository) Update(username, url string) error {
+	return l.db.Update(username, url).Error
 }
 
 func (l *LinkRepository) Delete(id string) (*types.Link, error) {

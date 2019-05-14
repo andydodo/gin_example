@@ -30,6 +30,7 @@ func (lS *LinkService) CreateLink(link *types.Link, url string) (*types.Link, er
 	if !ok || err != nil {
 		return &types.Link{}, errors.Wrap(err, "error url is illgal")
 	}
+	link.Url = url
 
 	err = lS.r.Store(link)
 	if err != nil {
@@ -42,8 +43,8 @@ func (lS *LinkService) GetLink(id string) (*types.Link, error) {
 	return lS.r.Find(id)
 }
 
-func (lS *LinkService) UpdateLink(link *types.Link) error {
-	return lS.r.Update(link)
+func (lS *LinkService) UpdateLink(username, url string) error {
+	return lS.r.Update(username, url)
 }
 
 func (lS *LinkService) DeleteLink(id string) (*types.Link, error) {

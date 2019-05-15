@@ -35,7 +35,6 @@ func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 	}
 	var (
 		req request
-		//link types.Link
 	)
 
 	id := c.Param("id")
@@ -57,7 +56,9 @@ func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 		return
 	}
 
-	err = a.LinkService.UpdateLink(req.UserName, req.Url)
+	link.UserName = req.UserName
+	link.Url = req.Url
+	err = a.LinkService.UpdateLink(link)
 	if err != nil {
 		a.Logger.Printf("error updatinging link: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -110,14 +111,13 @@ func (a *AppServer) DeleteLinkHandler(c *gin.Context) {
 		return
 	}
 
-	link, err := a.LinkService.DeleteLink(id)
+	err := a.LinkService.DeleteLink(id)
 	if err != nil {
 		a.Logger.Printf("error deleting link: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"UserName": link.UserName,
-		"Url":      link.Url,
+		"Id #" + id: "deleted",
 	})
 }

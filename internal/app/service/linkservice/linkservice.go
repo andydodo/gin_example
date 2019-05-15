@@ -43,10 +43,10 @@ func (lS *LinkService) GetLink(id string) (*types.Link, error) {
 	return lS.r.Find(id)
 }
 
-func (lS *LinkService) UpdateLink(username, url string) error {
-	return lS.r.Update(username, url)
+func (lS *LinkService) UpdateLink(link *types.Link) error {
+	return lS.r.Update(link)
 }
 
-func (lS *LinkService) DeleteLink(id string) (*types.Link, error) {
+func (lS *LinkService) DeleteLink(id string) error {
 	return lS.r.Delete(id)
 }

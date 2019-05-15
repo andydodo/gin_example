@@ -15,13 +15,13 @@ type LinkRepository interface {
 	Store(*Link) error
 	Find(string) (*Link, error)
 	FindByUserName(string) (*Link, error)
-	Update(username string, url string) error
-	Delete(string) (*Link, error)
+	Update(*Link) error
+	Delete(string) error
 }
 
 type LinkService interface {
 	CreateLink(*Link, string) (*Link, error)
-	GetLink(id string) (*Link, error)
-	UpdateLink(username string, url string) error
-	DeleteLink(id string) (*Link, error)
+	GetLink(string) (*Link, error)
+	UpdateLink(*Link) error
+	DeleteLink(string) error
 }

@@ -7,8 +7,8 @@ import (
 type Link struct {
 	gorm.Model
 	//UserId   int
-	UserName string
-	Url      string `gorm:"not null"`
+	UserName string `gorm:"column:username" form:"username" json:"username"`
+	Url      string `gorm:"column:url" form:"url" json:"url" "not null"`
 }
 
 type LinkRepository interface {
@@ -16,12 +16,12 @@ type LinkRepository interface {
 	Find(string) (*Link, error)
 	FindByUserName(string) (*Link, error)
 	Update(*Link) error
-	Delete(string) (*Link, error)
+	Delete(string) error
 }
 
 type LinkService interface {
 	CreateLink(*Link, string) (*Link, error)
-	GetLink(id string) (*Link, error)
+	GetLink(string) (*Link, error)
 	UpdateLink(*Link) error
-	DeleteLink(id string) (*Link, error)
+	DeleteLink(string) error
 }

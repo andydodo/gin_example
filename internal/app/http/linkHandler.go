@@ -22,21 +22,19 @@ func (a *AppServer) GetLinkHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Name": link.UserName,
-		"Url":  link.Url,
+		"UserName": link.UserName,
+		"Url":      link.Url,
 	})
 
 }
 
 func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 	type request struct {
-		UserName string `json:"username"`
-		Url      string `json:"url"`
+		UserName string `form:"username" json:"username" binding:"required"`
+		Url      string `form:"url" json:"url" binding:"required"`
 	}
-
 	var (
-		req  request
-		link types.Link
+		req request
 	)
 
 	id := c.Param("id")
@@ -45,22 +43,22 @@ func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 		return
 	}
 
-	_, err := a.LinkService.GetLink(id)
+	link, err := a.LinkService.GetLink(id)
 	if err != nil {
 		a.Logger.Printf("error getting link %v", err)
 		c.Status(http.StatusNotFound)
 		return
 	}
 
-	err = c.BindJSON(&req)
+	err = c.Bind(&req)
 	if err != nil || req.UserName == "" || req.Url == "" {
 		c.Status(http.StatusBadRequest)
 		return
 	}
+
 	link.UserName = req.UserName
 	link.Url = req.Url
-
-	err = a.LinkService.UpdateLink(&link)
+	err = a.LinkService.UpdateLink(link)
 	if err != nil {
 		a.Logger.Printf("error updatinging link: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -76,22 +74,22 @@ func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 
 func (a *AppServer) CreateLinkHandler(c *gin.Context) {
 	type request struct {
-		UserName string `json:"username"`
-		Url      string `json:"url"`
+		UserName string `form:"username" json:"username" binding:"required"`
+		Url      string `form:"url" json:"url" binding:"required"`
 	}
-
 	var (
-		linkModel types.Link
 		req       request
+		linkModel types.Link
 	)
 
-	err := c.BindJSON(&req)
+	err := c.Bind(&req)
 	if err != nil || req.UserName == "" || req.Url == "" {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
 	linkModel.UserName = req.UserName
+	//linkModel.Url = req.Url
 
 	link, err := a.LinkService.CreateLink(&linkModel, req.Url)
 	if err != nil {
@@ -113,15 +111,13 @@ func (a *AppServer) DeleteLinkHandler(c *gin.Context) {
 		return
 	}
 
-	link, err := a.LinkService.DeleteLink(id)
+	err := a.LinkService.DeleteLink(id)
 	if err != nil {
 		a.Logger.Printf("error deleting link: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"UserName": link.UserName,
-		"Url":      link.Url,
+		"Id #" + id: "deleted",
 	})
 }

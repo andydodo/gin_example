@@ -55,13 +55,12 @@ func (l *LinkRepository) Update(link *types.Link) error {
 	return l.db.Save(link).Error
 }
 
-func (l *LinkRepository) Delete(id string) (*types.Link, error) {
+func (l *LinkRepository) Delete(id string) error {
 	var link types.Link
 
-	db := l.db.Where("id = ?", id).Delete(&link)
-	err := first(db, &link)
+	err := l.db.Where("id = ?", id).Delete(&link).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &link, nil
+	return nil
 }

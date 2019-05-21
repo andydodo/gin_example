@@ -2,6 +2,10 @@ run:
 	@echo "=============starting server============="
 	go run cmd/ginexample/main.go
 
+revive:
+	@echo "=============linting============="
+	revive -config configs/revive.toml -formatter friendly ./...
+
 test:
 	@echo "=============running test============="
 	go test ./...

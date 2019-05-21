@@ -13,13 +13,13 @@ import (
 )
 
 func main() {
-	c := configs.GetConfig()
+	c := configs.C
 	postgresConfig := postgres.DBConfig{
-		Host:     c.PGHost,
-		Port:     c.PGPort,
-		User:     c.PGUser,
-		Password: c.PGPassword,
-		Name:     c.PGDBName,
+		Host:     c.PSQL.Host,
+		Port:     c.PSQL.Port,
+		User:     c.PSQL.User,
+		Password: c.PSQL.Password,
+		Name:     c.PSQL.DBName,
 	}
 
 	repository := postgres.Initialize(postgresConfig)

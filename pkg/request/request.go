@@ -48,6 +48,7 @@ func (r *Req) Request() ([]byte, error) {
 		log.Printf("http response url error:(%v)", err)
 		return nil, errors.New("http response error")
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
 		return ioutil.ReadAll(resp.Body)

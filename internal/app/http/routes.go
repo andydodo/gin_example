@@ -11,6 +11,7 @@ func (a *AppServer) privateRoutes(router *gin.RouterGroup) {
 	router.POST("link", a.CreateLinkHandler)
 	router.PUT("link/:id", a.UpdateLinkHandler)
 	router.DELETE("link/:id", a.DeleteLinkHandler)
+	router.GET("links", a.GetAllLinkHandler)
 }
 
 func (a *AppServer) publicRoutes(router *gin.RouterGroup) {

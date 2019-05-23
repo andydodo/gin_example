@@ -50,3 +50,7 @@ func (lS *LinkService) UpdateLink(link *types.Link) error {
 func (lS *LinkService) DeleteLink(id string) error {
 	return lS.r.Delete(id)
 }
+
+func (lS *LinkService) GetAllLink(links *[]types.Link) error {
+	return lS.r.FindAll(links)
+}

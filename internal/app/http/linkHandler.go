@@ -121,3 +121,15 @@ func (a *AppServer) DeleteLinkHandler(c *gin.Context) {
 		"Id #" + id: "deleted",
 	})
 }
+
+func (a *AppServer) GetAllLinkHandler(c *gin.Context) {
+	var links []types.Link
+
+	if err := a.LinkService.GetAllLink(&links); err != nil {
+		a.Logger.Printf("error get all link: %v", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, links)
+	}
+
+}

@@ -64,3 +64,7 @@ func (l *LinkRepository) Delete(id string) error {
 	}
 	return nil
 }
+
+func (l *LinkRepository) FindAll(links *[]types.Link) error {
+	return l.db.Find(links).Error
+}

@@ -51,6 +51,6 @@ func (lS *LinkService) DeleteLink(id string) error {
 	return lS.r.Delete(id)
 }
 
-func (lS *LinkService) GetAllLink(links *[]types.Link) error {
-	return lS.r.FindAll(links)
+func (lS *LinkService) GetAllLink() ([]types.Link, error) {
+	return lS.r.FindAll()
 }

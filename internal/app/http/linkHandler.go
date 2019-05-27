@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/LIYINGZHEN/ginexample/internal/app/types"
@@ -123,13 +124,23 @@ func (a *AppServer) DeleteLinkHandler(c *gin.Context) {
 }
 
 func (a *AppServer) GetAllLinkHandler(c *gin.Context) {
-	var links []types.Link
+	type response struct {
+		ID       string `form:"id" json:"id" binding:"required"`
+		UserName string `form:"username" json:"username" binding:"required"`
+		Url      string `form:"url" json:"url" binding:"required"`
+	}
 
-	if err := a.LinkService.GetAllLink(&links); err != nil {
+	links, err := a.LinkService.GetAllLink()
+	if err != nil {
 		a.Logger.Printf("error get all link: %v", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-	} else {
-		c.JSON(http.StatusOK, links)
+		return
 	}
+
+	var res = make([]response, len(links))
+	for k, v := range links {
+		res[k] = response{ID: fmt.Sprintf("%v", v.ID), UserName: v.UserName, Url: v.Url}
+	}
+	c.JSON(http.StatusOK, res)
 
 }

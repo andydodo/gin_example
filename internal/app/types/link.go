@@ -17,7 +17,7 @@ type LinkRepository interface {
 	FindByUserName(string) (*Link, error)
 	Update(*Link) error
 	Delete(string) error
-	FindAll(*[]Link) error
+	FindAll() ([]Link, error)
 }
 
 type LinkService interface {
@@ -25,5 +25,5 @@ type LinkService interface {
 	GetLink(string) (*Link, error)
 	UpdateLink(*Link) error
 	DeleteLink(string) error
-	GetAllLink(*[]Link) error
+	GetAllLink() ([]Link, error)
 }

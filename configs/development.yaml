@@ -4,9 +4,49 @@ server:
 
 psql:
   host: localhost
-  port: "5432"
+  port: 5432
   user: postgres
   Password:
-  dbName: ginexample
+  db_name: ginexample
 
-LogFile:
+jwt:
+  private_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEArU7PDN451PMSbFPsryrEEjMaISyG8iEM9kGggg7ioZRRnMXT
+    ab7zMVIQCoRn5dZBkSpPoU6LML6+qmvsxlojrwtL3NGGK44W+elOwcvFr6gijVkN
+    2RBxmG/SkFid94tShZRvtsKL9MCI96QfaXU75TO+ernFdKP8wFL9MSnGABttswAM
+    okPrOyuJDDkPSG2ZG+3JUHWe5bQi9cDbw7uGNZNdy86x9QsGlDJOaUBM8tbjIfPI
+    DCu2HZbHzljIQR4SIu9VS+XrDT9Nz0zMVSfJzNzyamFdLsets9SDa5RSIGqSC2mC
+    e+LQDDVFJ9YnglQi4saOryT/pcbv8+Gh61eKbQIDAQABAoIBAQChEyEvFY/skupp
+    kmrltzq6q5I6iPb3La6tZft3RbxvbrmXmunOW7IOAfZ0v/EM1eDkuc1+39BQQshU
+    /q/2/qoxs68Tkg1Ah/Rk2+neBrU6eGt8setD9puNkUjD7gkLnQraqkZWN2T62sOy
+    XnDvhA1iDoCX8fdKXGu6mKdIPUoQp+TK7HU3QS5vUqirhAarQsEyqLJABPoBZZda
+    TyhdAzCozFEcwdVrrz3cP/ar7eVvGDgg3q3JddO0ujeNA12Kap9DWinIskuOoy38
+    CCuUGXyZ3qGrsR63ONVhGZ2G1l6DqKw0AIqK+sNsRv8pz4NwbFDp+JvB0jVNj2/h
+    9LPG3XvhAoGBAOOdBRB5oVOQlx0mb38BcJ78YfoypWu9DquhGMgNv9r8mmta8FT0
+    MAsw0FUAu7uyq/66zff8jEEKRF8Gb+AMDgfZDFeX51QgK7bnwnUrg0GwUVh1x5N6
+    SS1tBksJwXYVVZObJCiywqgxy66qHTH+/O8fuf2oHX/tp7WlmfJKswgJAoGBAMLr
+    /ASwAeKSWIFw0auMZG/PTkI2eYQQ+1Xva5dFpq4cJj3W+zpNan6ZZxkNUEP7Mius
+    rjatZCZxJHzdiKjNz3tEADrOBb3jBj87Z0pSYogFkT1F1ZjVNPPsLfAGHitDQ9TB
+    iuSe2h4dcBNA7OWXyMqSWkYys4eSNYnxqdpsO2BFAoGAImr99w3NXUuB7kB/n57i
+    HshfMGw0I2SFMWK80pNxrXWBDDbGHLKICUkqV5Ay0yEjbPNmbddchgE9cXkRtblc
+    7cbeXOh1bH0o3xGQkBMyV96Hjm7Q7PYS1rGjv/kLrgVv2VAeWaEeWjydZh4HKCY8
+    rRQJFdg0DcIsGAWgj8jH5bECgYBJaCfj+Ajts+GC9eLwcRHODctSIkPHGcIdjen9
+    8Swhe9ZnCZRZU5hcjxcFlz74Kxys1/5P9yK1W3y7TY7Oy5tst6JCgx4kceADZjKz
+    Ca2zvi0BX1Bem0Sy6+os75DjCBT+hdjx2mUYXEu95ICSwoPKzi0TLLrxvn1NMuad
+    rI775QKBgQCVJy9Eo9UVammD4fmeisGcAcSQaMooOafaNYV1Giv2KXvqNJ4D3U73
+    6jQTGhyrctw7lc55ZJVOwnLZIpQ3ai/OhzDkehoycxL6qkK2yicJLEoLMjgGUuY/
+    trBPmZb8XpZZFka/mGLuQchvRDpAQAEKv5MAF8mQ3J5B7mxtvC4XJg==
+    -----END RSA PRIVATE KEY-----
+  public_key: |
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArU7PDN451PMSbFPsryrE
+    EjMaISyG8iEM9kGggg7ioZRRnMXTab7zMVIQCoRn5dZBkSpPoU6LML6+qmvsxloj
+    rwtL3NGGK44W+elOwcvFr6gijVkN2RBxmG/SkFid94tShZRvtsKL9MCI96QfaXU7
+    5TO+ernFdKP8wFL9MSnGABttswAMokPrOyuJDDkPSG2ZG+3JUHWe5bQi9cDbw7uG
+    NZNdy86x9QsGlDJOaUBM8tbjIfPIDCu2HZbHzljIQR4SIu9VS+XrDT9Nz0zMVSfJ
+    zNzyamFdLsets9SDa5RSIGqSC2mCe+LQDDVFJ9YnglQi4saOryT/pcbv8+Gh61eK
+    bQIDAQAB
+    -----END PUBLIC KEY-----
+
+log_file:

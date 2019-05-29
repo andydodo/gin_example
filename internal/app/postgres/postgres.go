@@ -36,6 +36,7 @@ type Repository struct {
 
 // Initialize the postgres database.
 func Initialize(c DBConfig) *Repository {
+	fmt.Printf("c.connectionInfo() %+v", c.connectionInfo())
 	db, err := gorm.Open("postgres", c.connectionInfo())
 	if err != nil {
 		panic(err)

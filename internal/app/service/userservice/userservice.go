@@ -14,7 +14,6 @@ type UserService struct {
 type Authenticator interface {
 	Hash(password string) (string, error)
 	CompareHash(hashedPassword string, plainPassword string) error
-	SessionID() string
 }
 
 // New returns the UserService.
@@ -41,7 +40,6 @@ func (uS *UserService) CreateUser(user *types.User, password string) (*types.Use
 	}
 
 	user.PasswordHash = hashedPassword
-	user.SessionID = uS.a.SessionID()
 
 	err = uS.r.Store(user)
 	if err != nil {
@@ -61,25 +59,12 @@ func (uS *UserService) Login(email string, password string) (*types.User, error)
 		return nil, errors.Wrap(err, "error comparing hash")
 	}
 
-	user.SessionID = uS.a.SessionID()
 	err = uS.r.Update(user)
 	if err != nil {
 		return nil, errors.Wrap(err, "error updating sessionID")
 	}
 
 	return user, nil
-}
-
-func (uS *UserService) Logout(sessionID string) error {
-	user, err := uS.r.FindBySessionID(sessionID)
-	if err != nil {
-		return errors.Wrap(err, "error finding by sessionID")
-	}
-
-	user.SessionID = ""
-	uS.r.Update(user)
-
-	return nil
 }
 
 func (uS *UserService) CheckAuthentication(sessionID string) (*types.User, error) {

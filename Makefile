@@ -1,6 +1,6 @@
 run:
 	@echo "=============starting server============="
-	go run cmd/ginexample/main.go
+	reflex -c ./reflex.conf
 
 revive:
 	@echo "=============linting============="

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/LIYINGZHEN/ginexample/internal/app/types"
+	"github.com/LIYINGZHEN/ginexample/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,13 +14,15 @@ type AppServer struct {
 	LinkService types.LinkService
 	Logger      *log.Logger
 	route       *gin.Engine
+
+	JWT jwt.JWT
 }
 
 func (a *AppServer) initialize() {
 	gin.DisableConsoleColor()
 	route := gin.New()
 	public := route.Group("/api", Logger(a.Logger), CORS())
-	private := route.Group("/api/v1", Logger(a.Logger), CORS(), NewAuthMiddleware(a.UserService))
+	private := route.Group("/api/v1", Logger(a.Logger), CORS(), NewAuthMiddleware(a.JWT))
 	a.publicRoutes(public)
 	a.privateRoutes(private)
 

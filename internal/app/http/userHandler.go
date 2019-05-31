@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/LIYINGZHEN/ginexample/internal/app/types"
 	"github.com/gin-gonic/gin"
@@ -36,7 +37,13 @@ func (a *AppServer) RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
-	setCookie(c, user.SessionID)
+	token, err := a.JWT.GenerateToken(strconv.FormatUint(uint64(user.ID), 10), false)
+	if err != nil {
+		a.Logger.Printf("error creating user: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	setCookie(c, token)
 	c.JSON(http.StatusOK, gin.H{
 		"ID":    user.ID,
 		"Name":  user.Name,
@@ -68,7 +75,13 @@ func (a *AppServer) LoginUserHandler(c *gin.Context) {
 		return
 	}
 
-	setCookie(c, user.SessionID)
+	token, err := a.JWT.GenerateToken(strconv.FormatUint(uint64(user.ID), 10), false)
+	if err != nil {
+		a.Logger.Printf("error logging in: %v", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	setCookie(c, token)
 	c.JSON(http.StatusOK, gin.H{
 		"Name":  user.Name,
 		"Email": user.Email,
@@ -76,19 +89,6 @@ func (a *AppServer) LoginUserHandler(c *gin.Context) {
 }
 
 func (a *AppServer) LogoutUserHandler(c *gin.Context) {
-	sessionID, err := c.Cookie("sessionID")
-	if err != nil || sessionID == "" {
-		c.Status(http.StatusOK)
-		return
-	}
-
-	err = a.UserService.Logout(sessionID)
-	if err != nil {
-		a.Logger.Printf("error logging out user %v", err)
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
 	setCookie(c, "")
 	c.Status(http.StatusOK)
 }

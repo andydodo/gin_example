@@ -2,44 +2,46 @@ package configs
 
 import (
 	"log"
-	"os"
+	"strings"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
-type Server struct {
-	URL  string
-	Port string
-}
-
-type PSQL struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	DBName   string
-}
-
 type Config struct {
-	Server  Server
-	PSQL    PSQL
-	LogFile string
+	Name string
 }
 
-var C Config
+func Init(cfg string) error {
+	c := Config{
+		Name: cfg,
+	}
 
-func init() {
-	env, ok := os.LookupEnv("ENV")
-	if !ok {
-		env = "development"
+	if err := c.initConfig(); err != nil {
+		return err
 	}
-	viper.SetConfigFile("configs/" + env + ".yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+
+	c.watchConfig()
+
+	return nil
+}
+
+func (c *Config) initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName(c.Name)
+	viper.SetConfigType("yaml")
+	viper.AutomaticEnv()
+	replacer := strings.NewReplacer(".", "_")
+	viper.SetEnvKeyReplacer(replacer)
+	if err := viper.ReadInConfig(); err != nil {
+		return err
 	}
-	err = viper.Unmarshal(&C)
-	if err != nil {
-		log.Fatalf("Error reading config file, %s", err)
-	}
+	return nil
+}
+
+func (c *Config) watchConfig() {
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		log.Printf("Config file changed: %s", e.Name)
+	})
 }

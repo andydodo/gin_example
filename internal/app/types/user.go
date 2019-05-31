@@ -29,6 +29,5 @@ type UserService interface {
 
 type UserAuthenticationProvider interface {
 	Login(email string, password string) (*User, error)
-	Logout(sessionID string) error
 	CheckAuthentication(sessionID string) (*User, error)
 }

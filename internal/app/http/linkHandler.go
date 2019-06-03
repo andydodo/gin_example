@@ -22,11 +22,18 @@ func (a *AppServer) GetLinkHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"Name": link.Name,
-		"Url":  link.Url,
-	})
-
+	if c.Query("pretty") != "" {
+		c.IndentedJSON(http.StatusOK, gin.H{
+			"Name": link.Name,
+			"Url":  link.Url,
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"Name": link.Name,
+			"Url":  link.Url,
+		})
+	}
+	return
 }
 
 func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
@@ -141,6 +148,12 @@ func (a *AppServer) GetAllLinkHandler(c *gin.Context) {
 	for k, v := range links {
 		res[k] = response{ID: fmt.Sprintf("%v", v.ID), Name: v.Name, Url: v.Url}
 	}
-	c.JSON(http.StatusOK, res)
 
+	if c.Query("pretty") != "" {
+		c.IndentedJSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusOK, res)
+	}
+
+	return
 }

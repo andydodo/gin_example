@@ -136,3 +136,41 @@ func (a *AppServer) GetMeHandler(c *gin.Context) {
 func setCookie(c *gin.Context, value string) {
 	c.SetCookie("sessionID", value, 86400, "/", "localhost", false, true)
 }
+
+func (a *AppServer) ChPwdHandler(c *gin.Context) {
+	id, exists := c.Get("userID")
+	if id == "" || exists == false {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	user, err := a.UserService.GetUser(fmt.Sprintf("%v", id))
+	if err != nil {
+		a.Logger.Printf("error getting user for change password %v", err)
+		c.Status(http.StatusNotFound)
+		return
+	}
+
+	oldPasswd := c.Query("old_password")
+	newPasswd := c.Query("new_password")
+	repeat := c.Query("repeat")
+
+	if newPasswd != repeat {
+		a.Logger.Println("error enter password is not match please try again")
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	user, err = a.UserService.ChangePasswd(user, oldPasswd, newPasswd)
+	if err != nil {
+		a.Logger.Printf("error change password failed %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Name":   user.Name,
+		"Status": "OK",
+	})
+
+}

@@ -79,3 +79,21 @@ func (uS *UserService) CheckAuthentication(sessionID string) (*types.User, error
 func (uS *UserService) GetUser(id string) (*types.User, error) {
 	return uS.r.Find(id)
 }
+
+func (uS *UserService) ChangePasswd(user *types.User, oldPw, newPw string) (*types.User, error) {
+	err := uS.a.CompareHash(user.PasswordHash, oldPw)
+	if err != nil {
+		return nil, errors.Wrap(err, "error change password failed comparing hash")
+	}
+
+	user.PasswordHash, err = uS.a.Hash(newPw)
+	if err != nil {
+		return &types.User{}, errors.Wrap(err, "error change password failed hashing password")
+	}
+	err = uS.r.Update(user)
+	if err != nil {
+		return nil, errors.Wrap(err, "error change password failed updating user info")
+	}
+
+	return user, nil
+}

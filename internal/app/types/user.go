@@ -25,6 +25,7 @@ type UserService interface {
 	CreateUser(u *User, password string) (*User, error)
 	GetUser(id string) (*User, error)
 	UserAuthenticationProvider
+	ChangePasswd(u *User, oldiPw, newPw string) (*User, error)
 }
 
 type UserAuthenticationProvider interface {

@@ -6,6 +6,7 @@ import (
 
 func (a *AppServer) privateRoutes(router *gin.RouterGroup) {
 	router.GET("me", a.GetMeHandler)
+	router.POST("me/chpwd", a.ChPwdHandler)
 	router.GET("users/:id", a.GetUserHandler)
 	router.GET("link/:id", a.GetLinkHandler)
 	router.POST("link", a.CreateLinkHandler)

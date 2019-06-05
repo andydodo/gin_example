@@ -20,9 +20,9 @@ func New(linkRepository types.LinkRepository) *LinkService {
 }
 
 func (lS *LinkService) CreateLink(link *types.Link, url string) (*types.Link, error) {
-	_, err := lS.r.FindByUserName(link.UserName)
+	_, err := lS.r.FindByName(link.Name)
 	if err == nil {
-		return &types.Link{}, errors.New("username already exists")
+		return &types.Link{}, errors.New("name already exists")
 	}
 
 	//add by andy

@@ -22,17 +22,24 @@ func (a *AppServer) GetLinkHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"UserName": link.UserName,
-		"Url":      link.Url,
-	})
-
+	if c.Query("pretty") != "" {
+		c.IndentedJSON(http.StatusOK, gin.H{
+			"Name": link.Name,
+			"Url":  link.Url,
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"Name": link.Name,
+			"Url":  link.Url,
+		})
+	}
+	return
 }
 
 func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 	type request struct {
-		UserName string `form:"username" json:"username" binding:"required"`
-		Url      string `form:"url" json:"url" binding:"required"`
+		Name string `form:"name" json:"name" binding:"required"`
+		Url  string `form:"url" json:"url" binding:"required"`
 	}
 	var (
 		req request
@@ -52,12 +59,12 @@ func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 	}
 
 	err = c.Bind(&req)
-	if err != nil || req.UserName == "" || req.Url == "" {
+	if err != nil || req.Name == "" || req.Url == "" {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	link.UserName = req.UserName
+	link.Name = req.Name
 	link.Url = req.Url
 	err = a.LinkService.UpdateLink(link)
 	if err != nil {
@@ -67,16 +74,16 @@ func (a *AppServer) UpdateLinkHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"UserName": link.UserName,
-		"Url":      link.Url,
+		"Name": link.Name,
+		"Url":  link.Url,
 	})
 
 }
 
 func (a *AppServer) CreateLinkHandler(c *gin.Context) {
 	type request struct {
-		UserName string `form:"username" json:"username" binding:"required"`
-		Url      string `form:"url" json:"url" binding:"required"`
+		Name string `form:"name" json:"name" binding:"required"`
+		Url  string `form:"url" json:"url" binding:"required"`
 	}
 	var (
 		req       request
@@ -84,12 +91,12 @@ func (a *AppServer) CreateLinkHandler(c *gin.Context) {
 	)
 
 	err := c.Bind(&req)
-	if err != nil || req.UserName == "" || req.Url == "" {
+	if err != nil || req.Name == "" || req.Url == "" {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	linkModel.UserName = req.UserName
+	linkModel.Name = req.Name
 	//linkModel.Url = req.Url
 
 	link, err := a.LinkService.CreateLink(&linkModel, req.Url)
@@ -100,8 +107,8 @@ func (a *AppServer) CreateLinkHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"UserName": link.UserName,
-		"Url":      link.Url,
+		"Name": link.Name,
+		"Url":  link.Url,
 	})
 }
 
@@ -125,9 +132,9 @@ func (a *AppServer) DeleteLinkHandler(c *gin.Context) {
 
 func (a *AppServer) GetAllLinkHandler(c *gin.Context) {
 	type response struct {
-		ID       string `form:"id" json:"id" binding:"required"`
-		UserName string `form:"username" json:"username" binding:"required"`
-		Url      string `form:"url" json:"url" binding:"required"`
+		ID   string `form:"id" json:"id" binding:"required"`
+		Name string `form:"name" json:"name" binding:"required"`
+		Url  string `form:"url" json:"url" binding:"required"`
 	}
 
 	links, err := a.LinkService.GetAllLink()
@@ -139,8 +146,14 @@ func (a *AppServer) GetAllLinkHandler(c *gin.Context) {
 
 	var res = make([]response, len(links))
 	for k, v := range links {
-		res[k] = response{ID: fmt.Sprintf("%v", v.ID), UserName: v.UserName, Url: v.Url}
+		res[k] = response{ID: fmt.Sprintf("%v", v.ID), Name: v.Name, Url: v.Url}
 	}
-	c.JSON(http.StatusOK, res)
 
+	if c.Query("pretty") != "" {
+		c.IndentedJSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusOK, res)
+	}
+
+	return
 }

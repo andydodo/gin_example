@@ -7,14 +7,14 @@ import (
 type Link struct {
 	gorm.Model
 	//UserId   int
-	UserName string `gorm:"column:username" form:"username" json:"username"`
-	Url      string `gorm:"column:url" form:"url" json:"url" "not null"`
+	Name string `gorm:"column:name" form:"name" json:"name"`
+	Url  string `gorm:"column:url" form:"url" json:"url" "not null"`
 }
 
 type LinkRepository interface {
 	Store(*Link) error
 	Find(string) (*Link, error)
-	FindByUserName(string) (*Link, error)
+	FindByName(string) (*Link, error)
 	Update(*Link) error
 	Delete(string) error
 	FindAll() ([]Link, error)

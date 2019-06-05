@@ -35,11 +35,11 @@ func (l *LinkRepository) Find(id string) (*types.Link, error) {
 	return &link, nil
 }
 
-func (l *LinkRepository) FindByUserName(userName string) (*types.Link, error) {
-	if userName == "" {
+func (l *LinkRepository) FindByName(Name string) (*types.Link, error) {
+	if Name == "" {
 		return &types.Link{}, errors.New("not found")
 	}
-	return l.findBy("username", userName)
+	return l.findBy("name", Name)
 }
 
 func (l *LinkRepository) findBy(key, value string) (*types.Link, error) {

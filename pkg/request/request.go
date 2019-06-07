@@ -14,7 +14,6 @@ type Req struct {
 	Method  string
 	Timeout time.Duration
 	Retry   int
-	// add max worker nums
 	MaxNums int
 }
 

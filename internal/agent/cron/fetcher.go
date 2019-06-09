@@ -2,13 +2,27 @@ package cron
 
 import (
 	"fmt"
+	"github.com/LIYINGZHEN/ginexample/internal/agent/data"
+	"github.com/LIYINGZHEN/ginexample/internal/app/postgres"
+	"github.com/LIYINGZHEN/ginexample/internal/app/types"
+	"log"
 	"time"
 )
 
-func GetItem() {
+type Agent struct {
+	postgres.Repository
+}
+
+func New(repository *postgres.Repository) *Agent {
+	return &Agent{
+		*repository,
+	}
+}
+
+func (a *Agent) GetItem() {
 	t1 := time.NewTicker(time.Duration(30) * time.Second)
 	for {
-		err := getItem()
+		err := a.getItem()
 		if err != nil {
 			time.Sleep(time.Second * 1)
 			continue
@@ -17,35 +31,20 @@ func GetItem() {
 	}
 }
 
-func getItem() error {
-	items, err := db.FindAll()
+func (a *Agent) getItem() error {
+	detectedItemMap := make(map[string][]*data.DetectedItem)
+	items, err := a.LinkRepository.FindAll()
 	if err != nil {
 		return fmt.Errorf("get items error:", err)
 	}
 	for _, item := range items {
-		_, domain, _, _ := utils.ParseUrl(item.Url)
-		var ipIdcArr []g.IpIdc
-		if s.IP != "" {
-			ips := strings.Split(s.IP, ",")
-			for _, ip := range ips {
-				var tmp g.IpIdc
-				tmp.Ip = ip
-				tmp.Idc = "default"
-				ipIdcArr = append(ipIdcArr, tmp)
-			}
+		detectedItem := newDetectedItem(item)
+		key := item.Name
+
+		if _, exists := detectedItemMap[key]; exists {
+			detectedItemMap[key] = append(detectedItemMap[key], &detectedItem)
 		} else {
-			ipIdcArr = getIpAndIdc(domain)
-		}
-
-		for _, tmp := range ipIdcArr {
-			detectedItem := newDetectedItem(s, tmp.Ip, tmp.Idc)
-			key := utils.Getkey(tmp.Idc, int(detectedItem.Sid))
-
-			if _, exists := detectedItemMap[key]; exists {
-				detectedItemMap[key] = append(detectedItemMap[key], &detectedItem)
-			} else {
-				detectedItemMap[key] = []*g.DetectedItem{&detectedItem}
-			}
+			detectedItemMap[key] = []*data.DetectedItem{&detectedItem}
 		}
 	}
 
@@ -56,6 +55,14 @@ func getItem() error {
 		}
 	}
 
-	g.DetectedItemMap.Set(detectedItemMap)
+	data.DetectedItemMap.Set(detectedItemMap)
 	return nil
+}
+
+func newDetectedItem(item types.Link) data.DetectedItem {
+	detectedItem := data.DetectedItem{
+		Url: item.Url,
+	}
+
+	return detectedItem
 }

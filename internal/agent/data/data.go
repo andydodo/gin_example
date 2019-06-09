@@ -5,9 +5,7 @@ import (
 )
 
 type DetectedItem struct {
-}
-
-type CheckResult struct {
+	Url string `json:"url"`
 }
 
 type DetectedItemSafeMap struct {
@@ -22,8 +20,8 @@ var (
 func (this *DetectedItemSafeMap) Get(key string) ([]*DetectedItem, bool) {
 	this.RLock()
 	defer this.RUnlock()
-	ipItem, exists := this.M[key]
-	return ipItem, exists
+	Item, exists := this.M[key]
+	return Item, exists
 }
 
 func (this *DetectedItemSafeMap) Set(detectedItemMap map[string][]*DetectedItem) {

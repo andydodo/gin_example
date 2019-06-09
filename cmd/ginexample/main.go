@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/LIYINGZHEN/ginexample/configs"
+	"github.com/LIYINGZHEN/ginexample/internal/agent/cron"
 	"github.com/LIYINGZHEN/ginexample/internal/app/http"
 	"github.com/LIYINGZHEN/ginexample/internal/app/postgres"
 	"github.com/LIYINGZHEN/ginexample/internal/app/service/linkservice"
@@ -57,5 +58,9 @@ func main() {
 
 		JWT: jwt.NewJWT(viper.GetString("jwt.private_key"), viper.GetString("jwt.public_key")),
 	}
+
+	agent := cron.New(repository)
+	go agent.GetItem()
+
 	server.Run()
 }

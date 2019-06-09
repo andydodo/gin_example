@@ -1,3 +1,0 @@
-packge main
-
-func main () {}

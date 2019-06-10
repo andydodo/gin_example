@@ -138,6 +138,22 @@ func setCookie(c *gin.Context, value string) {
 }
 
 func (a *AppServer) ChPwdHandler(c *gin.Context) {
+	type request struct {
+		OldPassWord string `form:"oldpassword" json:"oldpassword" binding:"required"`
+		NewPassWord string `form:"newpassword" json:"newpassword" binding:"required"`
+		Repeat      string `form:"repeat" json:"repeat" binding:"required"`
+	}
+
+	var (
+		req request
+	)
+
+	err := c.Bind(&req)
+	if err != nil || req.OldPassWord == "" || req.NewPassWord == "" || req.Repeat == "" {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
 	id, exists := c.Get("userID")
 	if id == "" || exists == false {
 		c.Status(http.StatusBadRequest)
@@ -151,22 +167,18 @@ func (a *AppServer) ChPwdHandler(c *gin.Context) {
 		return
 	}
 
-	oldPasswd := c.Query("old_password")
-	newPasswd := c.Query("new_password")
-	repeat := c.Query("repeat")
-
-	if newPasswd != repeat {
+	if req.NewPassWord != req.Repeat {
 		a.Logger.Println("error enter password is not match please try again")
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	user, err = a.UserService.ChangePasswd(user, oldPasswd, newPasswd)
-	if err != nil {
-		a.Logger.Printf("error change password failed %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+  user, err = a.UserService.ChangePasswd(user, req.OldPassWord, req.NewPassWord)
+  if err != nil {
+    a.Logger.Printf("error change password failed %v", err)
+    c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+    return
+  }
 
 	c.JSON(http.StatusOK, gin.H{
 		"Name":   user.Name,

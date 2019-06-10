@@ -173,12 +173,12 @@ func (a *AppServer) ChPwdHandler(c *gin.Context) {
 		return
 	}
 
-	user, err = a.UserService.ChangePasswd(user, req.OldPassWord, req.NewPassWord)
-	if err != nil {
-		a.Logger.Printf("error change password failed %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+  user, err = a.UserService.ChangePasswd(user, req.OldPassWord, req.NewPassWord)
+  if err != nil {
+    a.Logger.Printf("error change password failed %v", err)
+    c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+    return
+  }
 
 	c.JSON(http.StatusOK, gin.H{
 		"Name":   user.Name,

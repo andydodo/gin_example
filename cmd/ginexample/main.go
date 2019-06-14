@@ -61,7 +61,7 @@ func main() {
 	}
 
 	agent := cron.New(repository, logger)
-	go agent.GetItem()
+  go agent.GetItem()
 
 	server.Run()
 }

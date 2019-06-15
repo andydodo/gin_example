@@ -51,16 +51,17 @@ func main() {
 		logDst = file
 	}
 
+	logger := log.New(logDst, "", log.LstdFlags)
 	server := http.AppServer{
-		Logger:      log.New(logDst, "", log.LstdFlags),
+		Logger:      logger,
 		UserService: userservice.New(repository.UserRepository),
 		LinkService: linkservice.New(repository.LinkRepository),
 
 		JWT: jwt.NewJWT(viper.GetString("jwt.private_key"), viper.GetString("jwt.public_key")),
 	}
 
-	agent := cron.New(repository)
-	go agent.GetItem()
+	agent := cron.New(repository, logger)
+  go agent.GetItem()
 
 	server.Run()
 }

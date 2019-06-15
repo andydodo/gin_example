@@ -11,11 +11,13 @@ import (
 
 type Agent struct {
 	postgres.Repository
+	*log.Logger
 }
 
-func New(repository *postgres.Repository) *Agent {
+func New(repository *postgres.Repository, logger *log.Logger) *Agent {
 	return &Agent{
 		*repository,
+		logger,
 	}
 }
 
@@ -35,6 +37,7 @@ func (a *Agent) getItem() error {
 	detectedItemMap := make(map[string][]*data.DetectedItem)
 	items, err := a.LinkRepository.FindAll()
 	if err != nil {
+		a.Printf("get items failed: %v", err)
 		return fmt.Errorf("get items error:", err)
 	}
 	for _, item := range items {
@@ -49,9 +52,8 @@ func (a *Agent) getItem() error {
 	}
 
 	for k, v := range detectedItemMap {
-		log.Println(k)
 		for _, i := range v {
-			log.Println(i)
+			a.Printf("item infomation name: %v value: %v", k, i)
 		}
 	}
 

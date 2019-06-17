@@ -76,7 +76,7 @@ func checkTargetStatus(item *types.Link) (itemCheckResult *types.Link) {
 		Ip:       item.Ip,
 		RespTime: item.Timeout,
 		RespCode: "0",
-	}
-
-	return
-}
+  }
+   
+  return
+  }

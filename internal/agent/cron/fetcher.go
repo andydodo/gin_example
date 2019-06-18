@@ -1,13 +1,25 @@
 package cron
 
 import (
-	"fmt"
 	"github.com/LIYINGZHEN/ginexample/internal/agent/data"
 	"github.com/LIYINGZHEN/ginexample/internal/app/postgres"
 	"github.com/LIYINGZHEN/ginexample/internal/app/types"
+	"github.com/pkg/errors"
 	"log"
 	"time"
+
+	list "github.com/LIYINGZHEN/ginexample/pkg/utils"
 )
+
+var (
+	CheckResultQueue *list.SafeLinkedList
+	WorkerChan       chan int
+)
+
+func init() {
+	WorkerChan = make(chan int, 50)
+	CheckResultQueue = list.NewSafeLinkedList()
+}
 
 type Agent struct {
 	postgres.Repository
@@ -21,50 +33,50 @@ func New(repository *postgres.Repository, logger *log.Logger) *Agent {
 	}
 }
 
-func (a *Agent) GetItem() {
+func (a *Agent) StartCheck() {
 	t1 := time.NewTicker(time.Duration(30) * time.Second)
 	for {
-		err := a.getItem()
-		if err != nil {
-			time.Sleep(time.Second * 1)
-			continue
+		items, _ := a.getItem()
+
+		for _, item := range items {
+			WorkerChan <- 1
+			go CheckTargetStatus(item)
 		}
 		<-t1.C
 	}
 }
 
-func (a *Agent) getItem() error {
-	detectedItemMap := make(map[string][]*data.DetectedItem)
+func (a *Agent) getItem() (*[]types.Link, error) {
 	items, err := a.LinkRepository.FindAll()
 	if err != nil {
-		a.Printf("get items failed: %v", err)
-		return fmt.Errorf("get items error:", err)
-	}
-	for _, item := range items {
-		detectedItem := newDetectedItem(item)
-		key := item.Name
-
-		if _, exists := detectedItemMap[key]; exists {
-			detectedItemMap[key] = append(detectedItemMap[key], &detectedItem)
-		} else {
-			detectedItemMap[key] = []*data.DetectedItem{&detectedItem}
-		}
+		a.Printf("get items from db failed: %v", err)
+		return nil, errors.Wrap(err, "get items from db failed")
 	}
 
-	for k, v := range detectedItemMap {
-		for _, i := range v {
-			a.Printf("item infomation name: %v value: %v", k, i)
-		}
-	}
-
-	data.DetectedItemMap.Set(detectedItemMap)
-	return nil
+	return &items, nil
 }
 
-func newDetectedItem(item types.Link) data.DetectedItem {
-	detectedItem := data.DetectedItem{
-		Url: item.Url,
-	}
+func CheckTargetStatus(item *types.Link) {
+	defer func() {
+		<-WorkerChan
+	}()
 
-	return detectedItem
+	checkResult := checkTargetStatus(item)
+	CheckResultQueue.PushFront(checkResult)
 }
+
+//todo: check health
+func checkTargetStatus(item *types.Link) (itemCheckResult *types.Link) {
+	itemCheckResult = &CheckResult{
+		Sid:      item.Sid,
+		Domain:   item.Domain,
+		Creator:  item.Creator,
+		Tag:      item.Tag,
+		Target:   item.Target,
+		Ip:       item.Ip,
+		RespTime: item.Timeout,
+		RespCode: "0",
+  }
+   
+  return
+  }

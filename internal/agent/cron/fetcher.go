@@ -35,29 +35,29 @@ func New(repository *postgres.Repository, logger *log.Logger) *Agent {
 }
 
 func (a *Agent) StartCheck() {
-	t1 := time.NewTicker(time.Duration(30) * time.Second)
-	for {
-		items, err := a.getItem()
-		if err != nil || items == nil {
-			continue
-		}
+  t1 := time.NewTicker(time.Duration(30) * time.Second)
+  for {
+    items, err := a.getItem()
+    if err != nil || items == nil {
+      continue
+    }
 
-		for _, item := range items {
-			WorkerChan <- 1
-			go CheckTargetStatus(item)
-		}
-		<-t1.C
-	}
+    for _, item := range items {
+      WorkerChan <- 1
+      go CheckTargetStatus(item)
+    }
+    <-t1.C
+  }
 }
 
 func (a *Agent) getItem() ([]types.Link, error) {
-	items, err := a.LinkRepository.FindAll()
-	if err != nil {
-		a.Printf("get items from db failed: %v", err)
-		return nil, errors.Wrap(err, "get items from db failed")
-	}
+  items, err := a.LinkRepository.FindAll()
+  if err != nil {
+    a.Printf("get items from db failed: %v", err)
+    return nil, errors.Wrap(err, "get items from db failed")
+  }
 
-	return items, nil
+  return items, nil
 }
 
 func CheckTargetStatus(item types.Link) {

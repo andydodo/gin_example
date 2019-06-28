@@ -7,8 +7,9 @@ import (
 type Link struct {
 	gorm.Model
 	//UserId   int
-	Name string `gorm:"column:name" form:"name" json:"name"`
-	Url  string `gorm:"column:url" form:"url" json:"url" "not null"`
+	Name   string `gorm:"column:name" form:"name" json:"name"`
+	Url    string `gorm:"column:url" form:"url" json:"url" "not null"`
+	Enable bool   `gorm:"column:enable" form:"enable" json:"enable"`
 }
 
 type LinkRepository interface {

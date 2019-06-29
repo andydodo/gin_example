@@ -4,6 +4,13 @@ import (
 	"sync"
 )
 
+type CheckResult struct {
+	Name   string
+	Url    string
+	Status int
+	Code   int
+}
+
 type DetectedItem struct {
 	Url string `json:"url"`
 }

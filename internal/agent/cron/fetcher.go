@@ -6,6 +6,7 @@ import (
 	"github.com/LIYINGZHEN/ginexample/internal/app/types"
 	"github.com/pkg/errors"
 	"log"
+	"net/http"
 	"time"
 
 	list "github.com/LIYINGZHEN/ginexample/pkg/utils"
@@ -17,7 +18,7 @@ var (
 )
 
 func init() {
-	WorkerChan = make(chan int, 50)
+	WorkerChan = make(chan int, 500)
 	CheckResultQueue = list.NewSafeLinkedList()
 }
 
@@ -34,29 +35,32 @@ func New(repository *postgres.Repository, logger *log.Logger) *Agent {
 }
 
 func (a *Agent) StartCheck() {
-	t1 := time.NewTicker(time.Duration(30) * time.Second)
-	for {
-		items, _ := a.getItem()
+  t1 := time.NewTicker(time.Duration(30) * time.Second)
+  for {
+    items, err := a.getItem()
+    if err != nil || items == nil {
+      continue
+    }
 
-		for _, item := range items {
-			WorkerChan <- 1
-			go CheckTargetStatus(item)
-		}
-		<-t1.C
-	}
+    for _, item := range items {
+      WorkerChan <- 1
+      go CheckTargetStatus(item)
+    }
+    <-t1.C
+  }
 }
 
-func (a *Agent) getItem() (*[]types.Link, error) {
-	items, err := a.LinkRepository.FindAll()
-	if err != nil {
-		a.Printf("get items from db failed: %v", err)
-		return nil, errors.Wrap(err, "get items from db failed")
-	}
+func (a *Agent) getItem() ([]types.Link, error) {
+  items, err := a.LinkRepository.FindAll()
+  if err != nil {
+    a.Printf("get items from db failed: %v", err)
+    return nil, errors.Wrap(err, "get items from db failed")
+  }
 
-	return &items, nil
+  return items, nil
 }
 
-func CheckTargetStatus(item *types.Link) {
+func CheckTargetStatus(item types.Link) {
 	defer func() {
 		<-WorkerChan
 	}()
@@ -66,17 +70,28 @@ func CheckTargetStatus(item *types.Link) {
 }
 
 //todo: check health
-func checkTargetStatus(item *types.Link) (itemCheckResult *types.Link) {
-	itemCheckResult = &CheckResult{
-		Sid:      item.Sid,
-		Domain:   item.Domain,
-		Creator:  item.Creator,
-		Tag:      item.Tag,
-		Target:   item.Target,
-		Ip:       item.Ip,
-		RespTime: item.Timeout,
-		RespCode: "0",
-  }
-   
-  return
-  }
+func checkTargetStatus(item types.Link) (itemCheckResult *data.CheckResult) {
+	itemCheckResult = &data.CheckResult{
+		Name: item.Name,
+		Url:  item.Url,
+		Code: 0,
+	}
+
+	if item.Enable {
+		resp, err := http.Get("http://" + item.Url)
+
+		if err != nil {
+			itemCheckResult.Status = 0
+			return
+		} else {
+			itemCheckResult.Status = 1
+			itemCheckResult.Code = resp.StatusCode
+		}
+
+		if resp.Body != nil {
+			defer resp.Body.Close()
+		}
+	}
+
+	return
+}

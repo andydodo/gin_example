@@ -45,7 +45,7 @@ curl -v --cookie "sessionID=3d266170-9fab-44f6-8694-52a06317b1f6" 'http://localh
 - `/api/v1/link/:id` GET link service (based on SessionToken).
 
 ```
-curl -v --cookie "sessionID=3d266170-9fab-44f6-8694-52a06317b1f6" 'http://localhost:8080/api/v1/link/1'
+curl -v --cookie "sessionID=3d266170-9fab-44f6-8694-52a06317b1f6" 'http://localhost:8080/api/v1/link/1?pretty=y'
 ```
 
 - `/api/v1/link/:id` Update link service (based on SessionToken).
@@ -63,5 +63,5 @@ curl -v --cookie "sessionID=3d266170-9fab-44f6-8694-52a06317b1f6" 'http://localh
 - `/api/v1/links` Get all link service (based on SessionToken).
 
 ```
-curl -v --cookie "sessionID=9078171b-5b1b-4bcf-bc2e-93a40dd0f47d" 'http://localhost:8080/api/v1/links' -X GET
+curl -v --cookie "sessionID=9078171b-5b1b-4bcf-bc2e-93a40dd0f47d" 'http://localhost:8080/api/v1/links?pretty=y' -X GET
 ```
